@@ -1,0 +1,16 @@
+figure out eventual coredump
+playlist based on relative weights & not just absolute rank (i.e. handle ties)
+make sure we actually get an appropriate number of tracks from an album
+	before moving on
+count number of tracks for current album before processing them, and then use
+	that number to do something useful (i.e. do things more along the lines of
+	the original explanation of the algorithm)
+
+* only play tracks if they're not in the blacklist database
+* make sure that we're cleaning up dynamically-allocated QUERY results
+* prune tracks from the blacklist database once their waiting period is over
+* reshuffle on SIGHUP
+* daemonize automatically
+* make sure this won't die with an empty input file
+x read from ini
+x handle command line parameters properly

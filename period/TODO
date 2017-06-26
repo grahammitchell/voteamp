@@ -1,0 +1,12 @@
+Add command-line parameter to specify starting period
+Add command-line parameter to *not* daemonize
+
+Make it automatically search for the first matching correct period
+
+* Make it unlink the file when it quits
+* Add signal handler to re-read ini file
+* Add signal handler to quit and go home
+* Add signal handler to advance to next period
+x Add signal handler to re-prompt for period (decided against this)
+* Correct for drift since sleep isn't real accurate
+

@@ -1,0 +1,60 @@
+This is a simple to-do list for my own use.  Items are not necessarily
+intended to be understandable by others.
+
+
+voter: have the do_ui or whatever it's called return a filled in user-struct.
+
+struct user
+{
+	char* username;
+	char* raw_passwd;
+	char* vote;
+};
+
+Also voted needs major restructuring.
+
+change voting to use Condorcet
+http://russp.org/electionmethods.org/Condorcet.htm
+
+global
+- write web client (see mp3jukebox) <http://ananke.worldonline.nl/~t755188/>
+- make more generic so this compiles on more systems
+* write linux cli client
+
+voted
+- add no-authentication mode
+- add some real authentication to the net protocol
+- use passwords
+- support web client/HTTP 1.0 at least
+- reinit if ballot changed
+- exponential back-off delay if can't lock state file
+    (perhaps create state.lock in /tmp to make this easier)
+- checksum at end of votestring for sanity
+- handle scaling votes for too many albums (currently only handled in client)
+- figure out how to keep track of already voteds in forked implementation
+- choose random order for tie votes (not merely alphabetic)
+- implement *all* options from voted.ini (many are ignored)
++ remove most of the debugging output
++ read info from ini
++ wipe state file every so often
+
+fxaudio
+- get rid of this whole kludge, instead integrate with freeamp
+- recover from open of invalid file (grep for nack vs ack)
+- handle m3u OR mp3 on command line (use file magic, not extension)
+- make playlist if given multiple mp3 or m3u (mix and match freely)
+- some sort of display of the currently playing song
+- add option to signal something on completion of song/playlist
+
+listmaker
+- add full-album mode (rather than individual songs)
+- read from ini
+- handle command line parameters properly
+- make sure this won't die with an empty input file
+
+Legend:
+- untouched
+= in progress
+* basically done, needs tweaking
++ complete
+

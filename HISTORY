@@ -1,0 +1,15 @@
+Version numbers follow the linux convention, where the first number is the
+major release.  voteamp is at zero because it is still in alpha.  The middle
+number is the minor release; even numbers are considered stable and odd
+numbers are for development.  The last number is the update level; these
+should change fairly frequently.  The next release will be 0.1.1, then 0.1.2,
+and so on.  Once the code becomes stable, it will be named 1.0.0, and the
+1.1.x development tree will be forked.
+
+
+History of changes in released versions:
+
+0.1.1           added global TODO list
+                put in CVS repository, mostly so I can keep track of changes.
+
+0.1.0           initial public release               25 Jul 99

@@ -1,0 +1,11 @@
+recover from open of invalid file (grep for nack vs ack)
+handle m3u OR mp3 on command line
+make playlist if given multiple mp3 or m3u (mix and match freely)
+close xaudio child process after songlist is over and idle for x minutes,
+	then respawn it when the songlist changes
+figure out why things sometimes hang when playing the same song twice in a row
+
++ some sort of display of the currently playing song
++ fix core dump on delete[]
++ maintain current pid in file in /var/run/
++ add command-line option to daemonize

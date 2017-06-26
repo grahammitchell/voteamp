@@ -1,0 +1,286 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:761: checking for a BSD compatible install
+configure:814: checking whether build environment is sane
+configure:871: checking whether make sets ${MAKE}
+configure:917: checking for working aclocal
+configure:930: checking for working autoconf
+configure:943: checking for working automake
+configure:956: checking for working autoheader
+configure:969: checking for working makeinfo
+configure:988: checking for gcc
+configure:1101: checking whether the C compiler (gcc  ) works
+configure:1117: gcc -o conftest    conftest.c  1>&5
+configure:1143: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:1148: checking whether we are using GNU C
+configure:1157: gcc -E conftest.c
+configure:1176: checking whether gcc accepts -g
+configure:1221: checking for Cygwin environment
+configure:1237: gcc -c   conftest.c 1>&5
+configure: In function `main':
+configure:1233: `__CYGWIN32__' undeclared (first use in this function)
+configure:1233: (Each undeclared identifier is reported only once
+configure:1233: for each function it appears in.)
+configure: failed program was:
+#line 1226 "configure"
+#include "confdefs.h"
+
+int main() {
+
+#ifndef __CYGWIN__
+#define __CYGWIN__ __CYGWIN32__
+#endif
+return __CYGWIN__;
+; return 0; }
+configure:1254: checking for mingw32 environment
+configure:1266: gcc -c   conftest.c 1>&5
+configure: In function `main':
+configure:1262: `__MINGW32__' undeclared (first use in this function)
+configure:1262: (Each undeclared identifier is reported only once
+configure:1262: for each function it appears in.)
+configure: failed program was:
+#line 1259 "configure"
+#include "confdefs.h"
+
+int main() {
+return __MINGW32__;
+; return 0; }
+configure:1283: checking how to run the C preprocessor
+configure:1304: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1438: checking host system type
+configure:1459: checking build system type
+configure:1488: checking for ld used by GCC
+configure:1556: checking if the linker (/usr/bin/ld) is GNU ld
+GNU ld version 2.9.1 (with BFD 2.9.1.0.23)
+configure:1573: checking for /usr/bin/ld option to reload object files
+configure:1585: checking for BSD-compatible nm
+configure:1623: checking whether ln -s works
+configure:1644: checking how to recognise dependant libraries
+configure:1827: checking for object suffix
+configure:1833: gcc -c   conftest.c 1>&5
+configure:1853: checking for executable suffix
+configure:1863: gcc -o conftest    conftest.c  1>&5
+configure:1894: checking command to parse /usr/bin/nm -B output
+configure:1974: gcc -c   conftest.c 1>&5
+configure:1977: /usr/bin/nm -B conftest.o | sed -n -e 's/^.*[ ]\([ABCDGISTW][ABCDGISTW]*\)[ ][ ]*\(\)\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2\3 \3/p' > conftest.nm
+configure:2028: gcc -o conftest    conftest.c conftstm.o 1>&5
+configure:2077: checking for dlfcn.h
+configure:2087: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2255: checking for ranlib
+configure:2322: checking for strip
+configure:2565: checking for objdir
+configure:2592: checking for gcc option to produce PIC
+configure:2744: checking if gcc PIC flag -fPIC works
+configure:2758: gcc -c  -fPIC -DPIC  conftest.c 1>&5
+configure:2810: checking if gcc static flag -static works
+configure:2825: gcc -o conftest    -static conftest.c  1>&5
+configure:2852: checking if gcc supports -c -o file.o
+configure:2871: gcc -c  -o out/conftest2.o  conftest.c 1>&5
+configure:2900: checking if gcc supports -c -o file.lo
+configure:2918: gcc -c  -c -o conftest.lo  conftest.c 1>&5
+configure:2968: checking if gcc supports -fno-rtti -fno-exceptions
+configure:2981: gcc -c  -fno-rtti -fno-exceptions -c conftest.c  conftest.c 1>&5
+configure:3008: checking whether the linker (/usr/bin/ld) supports shared libraries
+configure:3693: checking how to hardcode library paths into programs
+configure:3721: checking whether stripping libraries is possible
+configure:3735: checking dynamic linker characteristics
+configure:4135: checking if libtool supports shared libraries
+configure:4139: checking whether to build shared libraries
+configure:4162: checking whether to build static libraries
+configure:4698: checking whether -lc should be explicitly linked in
+configure:4705: gcc -c   conftest.c 1>&5
+configure:4718: gcc -shared conftest.o  -v -Wl,-soname -Wl,conftest -o conftest 2>&1 | grep  -lc  >/dev/null 2>&1
+configure:5309: checking host system type
+configure:5432: checking for Ogg
+configure:5462: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c   -logg 1>&5
+configure:5587: checking for Vorbis
+configure:5617: gcc -o conftest -O20 -ffast-math -fsigned-char       conftest.c   -lvorbis -lm  -logg 1>&5
+configure:5744: checking for dlopen
+configure:5772: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c  1>&5
+/tmp/ccBz5duN.o: In function `main':
+/tmp/ccBz5duN.o(.text+0x4): undefined reference to `dlopen'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 5749 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char dlopen(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dlopen();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_dlopen) || defined (__stub___dlopen)
+choke me
+#else
+dlopen();
+#endif
+
+; return 0; }
+configure:5794: checking for dlopen in -ldl
+configure:5813: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c -ldl   1>&5
+configure:5845: checking for ao
+configure:5875: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c   -lao -ldl 1>&5
+configure:5996: checking for libcurl
+configure:6026: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c   -lcurl 1>&5
+configure:6104: checking for pthread.h
+configure:6114: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:6236: checking for the pthreads library -lpthreads
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c -lpthreads  1>&5
+/usr/bin/ld: cannot open -lpthreads: No such file or directory
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6256 "configure"
+#include "confdefs.h"
+#include <pthread.h>
+int main() {
+pthread_t th; pthread_join(th, 0);
+                     pthread_attr_init(0); pthread_cleanup_push(0, 0);
+                     pthread_create(0,0,0,0);
+                     pthread_cancel(0); pthread_cleanup_pop(0); 
+; return 0; }
+configure:6225: checking whether pthreads work without any flags
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c   1>&5
+/tmp/ccER3ANU.o: In function `main':
+/tmp/ccER3ANU.o(.text+0xb): undefined reference to `pthread_join'
+/tmp/ccER3ANU.o(.text+0x1f): undefined reference to `_pthread_cleanup_push'
+/tmp/ccER3ANU.o(.text+0x2c): undefined reference to `pthread_create'
+/tmp/ccER3ANU.o(.text+0x36): undefined reference to `pthread_cancel'
+/tmp/ccER3ANU.o(.text+0x3e): undefined reference to `_pthread_cleanup_pop'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6256 "configure"
+#include "confdefs.h"
+#include <pthread.h>
+int main() {
+pthread_t th; pthread_join(th, 0);
+                     pthread_attr_init(0); pthread_cleanup_push(0, 0);
+                     pthread_create(0,0,0,0);
+                     pthread_cancel(0); pthread_cleanup_pop(0); 
+; return 0; }
+configure:6230: checking whether pthreads work with -Kthread
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char  -Kthread    conftest.c   1>&5
+gcc: unrecognized option `-Kthread'
+/tmp/ccJMftpF.o: In function `main':
+/tmp/ccJMftpF.o(.text+0xb): undefined reference to `pthread_join'
+/tmp/ccJMftpF.o(.text+0x1f): undefined reference to `_pthread_cleanup_push'
+/tmp/ccJMftpF.o(.text+0x2c): undefined reference to `pthread_create'
+/tmp/ccJMftpF.o(.text+0x36): undefined reference to `pthread_cancel'
+/tmp/ccJMftpF.o(.text+0x3e): undefined reference to `_pthread_cleanup_pop'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6256 "configure"
+#include "confdefs.h"
+#include <pthread.h>
+int main() {
+pthread_t th; pthread_join(th, 0);
+                     pthread_attr_init(0); pthread_cleanup_push(0, 0);
+                     pthread_create(0,0,0,0);
+                     pthread_cancel(0); pthread_cleanup_pop(0); 
+; return 0; }
+configure:6230: checking whether pthreads work with -kthread
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char  -kthread    conftest.c   1>&5
+gcc: unrecognized option `-kthread'
+/tmp/cc8lK52r.o: In function `main':
+/tmp/cc8lK52r.o(.text+0xb): undefined reference to `pthread_join'
+/tmp/cc8lK52r.o(.text+0x1f): undefined reference to `_pthread_cleanup_push'
+/tmp/cc8lK52r.o(.text+0x2c): undefined reference to `pthread_create'
+/tmp/cc8lK52r.o(.text+0x36): undefined reference to `pthread_cancel'
+/tmp/cc8lK52r.o(.text+0x3e): undefined reference to `_pthread_cleanup_pop'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6256 "configure"
+#include "confdefs.h"
+#include <pthread.h>
+int main() {
+pthread_t th; pthread_join(th, 0);
+                     pthread_attr_init(0); pthread_cleanup_push(0, 0);
+                     pthread_create(0,0,0,0);
+                     pthread_cancel(0); pthread_cleanup_pop(0); 
+; return 0; }
+configure:6236: checking for the pthreads library -llthread
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c -llthread  1>&5
+/usr/bin/ld: cannot open -llthread: No such file or directory
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6256 "configure"
+#include "confdefs.h"
+#include <pthread.h>
+int main() {
+pthread_t th; pthread_join(th, 0);
+                     pthread_attr_init(0); pthread_cleanup_push(0, 0);
+                     pthread_create(0,0,0,0);
+                     pthread_cancel(0); pthread_cleanup_pop(0); 
+; return 0; }
+configure:6236: checking for the pthreads library -lpthread
+configure:6266: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c -lpthread  1>&5
+configure:6298: checking for joinable pthread attribute
+configure:6307: gcc -o conftest -O20 -ffast-math -fsigned-char      conftest.c -lpthread  1>&5
+configure:6349: checking if more special flags are required for pthreads
+configure:6367: checking for cc_r
+configure:6418: checking for socket in -lsocket
+configure:6437: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c -lsocket   1>&5
+/usr/bin/ld: cannot open -lsocket: No such file or directory
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 6426 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char socket();
+
+int main() {
+socket()
+; return 0; }
+configure:6458: checking for gethostbyname in -lnsl
+configure:6477: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c -lnsl   1>&5
+configure:6517: checking for iconv
+configure:6535: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c  1>&5
+configure:6578: checking for iconv declaration
+configure:6603: gcc -c -O20 -ffast-math -fsigned-char   conftest.c 1>&5
+configure:6593: conflicting types for `iconv'
+/usr/include/iconv.h:45: previous declaration of `iconv'
+configure: failed program was:
+#line 6584 "configure"
+#include "confdefs.h"
+
+#include <stdlib.h>
+#include <iconv.h>
+extern
+#ifdef __cplusplus
+"C"
+#endif
+#if defined(__STDC__) || defined(__cplusplus)
+size_t iconv (iconv_t cd, char * *inbuf, size_t *inbytesleft, char * *outbuf, size_t *outbytesleft);
+#else
+size_t iconv();
+#endif
+
+int main() {
+
+; return 0; }
+configure:6633: checking for atexit
+configure:6661: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c  1>&5
+configure:6633: checking for on_exit
+configure:6661: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c  1>&5
+configure:6687: checking for nl_langinfo and CODESET
+configure:6699: gcc -o conftest -O20 -ffast-math -fsigned-char     conftest.c  1>&5
+configure: In function `main':
+configure:6695: `CODESET' undeclared (first use in this function)
+configure:6695: (Each undeclared identifier is reported only once
+configure:6695: for each function it appears in.)
+configure: failed program was:
+#line 6692 "configure"
+#include "confdefs.h"
+#include <langinfo.h>
+int main() {
+char* cs = nl_langinfo(CODESET);
+; return 0; }

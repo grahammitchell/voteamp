@@ -1,0 +1,418 @@
+voteamp 0.1.0 (c) 1999 Graham Mitchell - 25 Jul 99
+
+0) TABLE OF CONTENTS
+
+    1) A NOTE
+    2) INTRODUCTION
+    3) INCLUDED PROGRAMS
+    4) THE NETWORK PROTOCOL
+    5) INSTALLATION
+    6) KNOWN BUGS
+    7) REGISTRATION
+    8) ADDITIONAL INFORMATION
+
+
+1) A NOTE
+
+    The code in the archive is ALPHA code.  That is, it compiles on my linux
+    system and works with limited functionality, but is by no means
+    feature-complete. However, it serves as a proof of concept and a
+    framework for future development.  Do not use this if you are not
+    comfortable with experimental software.
+    
+    This documentation is fairly poor and assumes you know certain things
+    about using a linux system and compiling and using alpha software.
+    Certainly this documentation will improve as the software behind it does.
+    
+
+2) INTRODUCTION
+
+    The short version:
+    
+    voteamp is a collection of programs for the purpose of selecting and
+    playing a list of audio tracks by popular vote.  It requires that xaudio
+    be installed on your computer.  There is also a necessary client program
+    (for voting) which is currently not included.
+
+    The long version:
+    
+    voteamp is not so much a single program as it is a SYSTEM.  It is a
+    collection of five programs (three included), perl scripts, cron jobs and
+    various text files designed to accomplish a single purpose.  It very
+    much follows the UNIX tools philosophy making it less usable for the
+    novice user but much more flexible for the expert.  All code included
+    here is covered under the GNU General Public License (see the file
+    COPYING) for details.
+
+    Here's what it does.  Note that I am a high school computer science
+    teacher by day, so this is an account of how my students have used it for
+    a semester.
+
+    In the corner of the room sits a linux server box with a hard drive full
+    of (legal) mp3s.
+
+    Students come into the classroom and sit down at their machines.  They
+    log in and launch a Win32 client program (not included) which shows them
+    all available albums.  They select albums they want to hear and vote
+    against albums they don't.  They submit their vote, which goes to the
+    linux box in the corner via TCP/IP.
+
+    The server checks to make sure the student voting is allowed to do so
+    (the client sends the student's network login with the vote); if so,
+    their vote is tallied.
+
+    After several students have voted, the server produces a list of winning
+    albums, generates a random playlist of tracks off those albums, and the
+    music begins.  Any subsequent votes cause a retally, a new list of
+    winning albums, and a new playlist, which goes into effect once the
+    current song is over.  At the end of the period, the music stops, the
+    server resets with a new list of eligible students (those about to come
+    in the following period) and the whole process begins again.
+
+
+3) INCLUDED PROGRAMS
+
+    Basically, the meat of this system consists of five programs and a cron
+    job.
+
+    (1) rxaudio - a free mp3 player which takes commands on stdin (not the
+    command line) available from <http://www.xaudio.com/>  I did not write
+    this program and have nothing to do with its development.
+
+    (2) fxaudio - a daemon which launches rxaudio, redirecting stdin and
+    stdout to a pipe.  It reads a playlist and instructs rxaudio to play each
+    track in turn.  It runs continually unless instructed not to (with the
+    -quit command-line option), automatically reloads the playlist when it
+    changes (though it doesn't stop the currently playing song), waits
+    patiently for a new playlist when its playlist is empty or it has
+    finished playing all the songs on the list, and immediately advances to
+    the next track on the playlist when it receives signal USR1.
+
+    Currently this program requires rxaudio to run.  However, eventually I'd
+    like to replace this with a modified version of freeamp with the same
+    functionality.
+
+    (3) voted - a daemon which receives TCP/IP votes from a client program,
+    checks them against a list of valid users, tallies them up, and writes
+    out a list of winning "items" in order of votes when a predefined number
+    of valid votes have been received.  Once a particular user has voted,
+    subsequent votes attributed to that user are cheerfully ignored until the
+    server is reset (use signal HUP).
+
+    This code was originally a basic web server when I first wrote it back in
+    college.  I think some of the lines came from one of my TAs, who got it
+    from Comer's TCP/IP book.
+
+    Unfortunately, this code does not fork.  Though my original "web server"
+    did, this cannot because each process receives votes and must add them to
+    the global total.  Plans are to rewrite this so it will fork and allow
+    the forked processes to send vote data through IPC but be aware it
+    currently does not do this.  The multiplexing strategy at the moment is
+    just "block waiting connections and finish the current connection
+    quickly".
+
+    There is no security in this code, which it desperately needs.  At the
+    moment, security is handled through obscurity because most of my students
+    (first-year computer science) wouldn't know how to work around it even if
+    they examined the code.  Of course, this is one of the highest priorities
+    if this code is going to be useful on a large scale.
+
+    (4) listmaker - another daemon which converts the list of winning albums
+    produced by voted into a random playlist of tracks off the winning
+    albums. It monitors its input file for changes.  When they occur, it
+    writes an output file with the new results.
+
+    The song selection scheme works like this: the first line in the file is
+    assumed to be a text file containing a list of songs.  This file is
+    opened for reading.  For each line in the songlist, there is a 66% chance
+    that the current line will be chosen for inclusion in the final playlist.
+    This continues for each song in the file, meaning that on average, 2/3 of
+    the winning album will make it to the result playlist.  Then the
+    second-most-popular album file is opened, and each song has a 33% chance
+    of being chosen.  The songs from the third album have a 16.5% chance, and
+    so on. For later albums, the per-song percentage never drops below 1%,
+    usually meaning that there's about a 10% that one song from the album
+    will make it on the final playlist.  Once all the albums on the winning
+    list have been examined, the final playlist is randomized and written out
+    to the output file.
+
+    (5) VoteBot - a Win32 GUI client that presents the list of songs and
+    allows voting.  This is not included, not because I want to hide
+    information about it but because it's written in Borland C++ Builder 3
+    and I don't know how to package up that code so that it will compile
+    somewhere else.  It reads the same ballot file that voted uses to display
+    the list of songs.  It gets the username for each vote from the registry
+    and so sends each student's NetWare login name as their username.
+
+    Soon I hope to have a console application for linux that will accomplish
+    the same purpose, and a GUI app. for linux would be great, though I don't
+    know how to write one.
+
+    (6) the cron job - as I mentioned, students are in my classroom only for
+    a period at a time.  It is not desirable to allow people to vote who are
+    not physically near the speakers (i.e. in another classroom).  Of course,
+    I also want to reset the voting at the beginning of each period.  I use a
+    cron job for the purpose timed with the bell schedule: it overwrites the
+    list of allowed users with the list of student logins for students
+    arriving.  It also calls a perl script (included) which sends a HUP
+    signal to the vote server, restarting it and causing it to reread all its
+    configuration files. The cron job statements I use (not particularly
+    interesting) are included as "crontab.sample".
+
+
+4) THE NETWORK PROTOCOL
+
+    At the moment, the network protocol is mind-numbingly simple and
+    amazingly insecure.  The client sends a packet containing a username and
+    vote.  The server returns a packet containing the ASCII string "ACK" if
+    the vote counted (i.e. it was from an allowed user who had not already
+    voted) and "NACK" otherwise.
+
+    Say the list of albums in the ballot is like this:
+
+        1) Black Crowes - Shake Your Moneymaker
+        2) Eagles - Greatest Hits Vol. 2
+        3) Jimi Hendrix - Are You Experienced?
+        4) Lynyrd Skynyrd - Skynyrd's Innyrds
+        5) Pearl Jam - Ten
+        6) Rage Against The Machine - Evil Empire
+        7) Stevie Ray Vaughn - The Sky is Crying
+
+    Say I wish to vote for Pearl Jam and Stevie Ray Vaughn, vote against
+    Lynyrd Skynyrd, and I have no preference for the other four albums.  Also
+    presume my login name is "MitchGr".  My "vote" will look like so:
+
+    MitchGr AAAzZAZ
+
+    The alphabetic string after the login name (which will be compared,
+    case-insensitively, to the list of allowed users) is a list of yea/nay
+    votes for each song in the ballot, in the order in which they occur.
+    Each vote has variable strength ranging from lowercase z (25 points
+    against) to uppercase Z (25 points for) with both capital and lowercase A
+    being worth zero points.
+
+    This level of discrimination is intended to distinguish between voters
+    who vote for EVERYTHING versus someone who has merely one album which
+    they strongly want to hear.  The client currently enforces this by
+    assigning 75 "points" for each voter.  Each album up to three uses 25
+    points (since that's the maximum vote anyway).  After three selections,
+    points are evenly distributed among all votes.  So a person who wanted to
+    hear everything on the list would have a vote that looked like this:
+
+    MitchGr KKKKKKK
+
+    Thus the 75 points were distributed among seven votes of eleven apiece
+    (the client rounds up).  Currently the server does not sanity check
+    votes, so a vote of:
+
+    MitchGr zzzzzzz
+
+    would be accepted (-25 points for each of seven albums).
+
+    Albums with a positive score once the voting settles make it to the final
+    playlist.
+
+
+5) INSTALLATION
+
+    Okay, this doesn't really tell you how to "install" the program, but it
+    does tell you how to get everything running. With this release, you're
+    pretty much on your own.  You might want to look at the shell script
+    "vote.pl" to see how I launch things.  Of course, you'll need to compile
+    the three included programs within their respective directories.  I've
+    written a Makefile for each, at least, though not a global Makefile to do
+    the whole thing.  And don't even bother trying "make install".
+
+    On my machine, I have a whole hard drive devoted to holding mp3s mounted
+    on /music.  Files are stored by artist and then by album, so for example
+    Purple Haze is stored in:
+
+    /music/Jimi_Hendrix/Are_You_Experienced/Purple_Haze.mp3
+
+    The "Are_You_Experienced" directory also contains a playlist for all
+    songs in that directory called "album.m3u".  On my machine, the tracks
+    are listed in album order, though of course this is not necessary. The
+    name "album.m3u" is currently hard-coded into songlist.pl and another
+    program (listmaker) expects filenames in the playlist to be local.  That
+    is:
+
+        Purple_Haze.mp3
+        Manic_Depression.mp3
+        Hey_Joe.mp3
+
+    and NOT
+
+        /music/Jimi_Hendrix/Are_You_Experienced/Purple_Haze.mp3
+        /music/Jimi_Hendrix/Are_You_Experienced/Manic_Depression.mp3
+        /music/Jimi_Hendrix/Are_You_Experienced/Hey_Joe.mp3
+
+    I run the perl script songlist.pl from the root of the mp3 drive
+    (/music), and redirect the output to a file called "songs.bal".  This
+    file contains the human-readable name of the artists/albums followed by
+    the path to the songlist for that album.  That is, it looks like:
+
+    Jimi Hendrix - Are You Experienced
+    /music/Jimi_Hendrix/Are_You_Experienced/album.m3u
+    Rage Against The Machine - Evil Empire
+    /music/Rage_Against_The_Machine/Evil_Empire/album.m3u
+    (etc...)
+
+    This file is the "ballot", used by both the voting server and the client.
+    The client reads the first of each pair of lines (the human-readable
+    name) and the server reads the latter of each pair (the path), but the
+    only thing that is vitally important is that both lists end up in the
+    same order (i.e. make sure you're not sorting the list of names in the
+    client and not in the server or vice-versa).
+
+    Currently both the server and client sort the ballot file alphabetically.
+    The server does so case-insensitively.  Sorting these is probably a Bad
+    Idea; the perl script should handle any necessary sorting but it does
+    not.  Just be aware of this.
+
+    So I manually copy the ballot file into the voting server directory and
+    into the client program directory.  Once I get the server forking
+    properly, I plan to just send the ballot file across the network
+    (essentially via HTTP) if the client doesn't have it or has an old copy.
+
+    I then set up my cron jobs to reset the server timed with the
+    bell-schedule and to replace the list of valid users every period.  It's
+    important to overwrite the allowed users *before* resetting the server,
+    since the server rereads its configuration files only when reset.
+
+    Once that's done, I erase whatever the last "winning" playlist was (or
+    rather, I overwrite it with a zero-length file.  I imagine fxaudio would
+    panic if it was started referencing a non-existent file).
+
+    I then run fxaudio in the background, telling it to play songs from the
+    empty playlist. It finds it empty and goes into daemon mode, waking up
+    every ten seconds to see if it has something to do.  Once it finds its
+    playlist non-empty, it begins playing the first song.  Once the list is
+    over, it returns to daemon mode.
+
+    Then I run voted in the background.  It will wait for votes and produce a
+    list of winning albums in a predefined location once enough votes have
+    been received.  The list of albums is sorted such that the most popular
+    album is first in the list.  Ties are simply copied down in alphabetical
+    order (probably a bit unfair since ties are somewhat frequent).  Once the
+    voting threshold has been reached, any subsequent votes cause the list of
+    winning albums to be regenerated.
+
+    Finally I run listmaker in the background, telling it to make lists of
+    songs from the list of albums.  I give it voted's winning album list as
+    an input file and the currently-empty playlist as an output file.
+    Similar to fxaudio, it mostly sleeps, only waking up every ten seconds to
+    see if anything has changed.  Once it has a list of albums to work with,
+    it produces the outfile of songs with full pathnames by appending the
+    track file name (i.e. Fire.mp3) to the path from the ballot (which is
+    what voted writes out for "winners").
+
+    That is, given a winning album:
+
+    /music/Jimi_Hendrix/Are_You_Experienced/album.m3u
+
+    It opens album.m3u in that directory, chooses songs:
+        Manic_Depression.mp3
+        Hey_Joe.mp3
+
+    and writes:
+
+    /music/Jimi_Hendrix/Are_You_Experienced/Manic_Depression.mp3
+    /music/Jimi_Hendrix/Are_You_Experienced/Hey_Joe.mp3
+
+    to the output file.  (Well, technically it randomizes the list first, but
+    that's the idea.)
+
+    Eventually fxaudio notices its input file has changed, rereads it, and
+    begins playing the first song.
+
+    Note that since voted rewrites the results every time additional votes
+    are received, listmaker produces a new playlist every time its input file
+    changes, and fxaudio plays new lists when it gets them, the song list is
+    fairly dynamic.
+    
+
+    At the end of the period the cron job kicks in, rewriting the list of
+    allowed voters and resetting the server to zero out any existing votes.
+    The process begins again.  There is much good music played.  Everyone is
+    happy.
+
+6) KNOWN BUGS
+
+    Don't even get me started.  This is alpha code, remember?  There are no
+    show-stoppers that I know of.  You can find lists of things I'd like to
+    change by reading this document, by reading the files called TODO in the
+    directory for each program, and by searching for FIXME in the source
+    files.
+
+    However, one peculiarity should be mentioned.  If voting is fairly
+    sporadic throughout a voting period, you might hear the same song
+    multiple times. Consider the following scenario (which happens in my
+    classroom fairly often).
+
+    1) Lots of students vote.
+    
+    2) voted chooses a list of winning albums (say Pearl Jam's "Ten" is number
+        one).
+    
+    3) listmaker produces a list with a lot of Pearl Jam songs, including
+        "Jeremy", which is about four songs down.
+    
+    4) The class hears a good half-hour worth of music, including "Jeremy".
+    
+    5) Johnny submits a vote, voting for "The Mulan Soundtrack" and nothing
+        else.
+    
+    6) Since he didn't vote against Pearl Jam, it remains the number one
+        album. However, since new votes were received, voted writes a new
+        list of winning albums, now including Mulan (which is at the bottom
+        of the list since it presumably received only one vote).
+    
+    7) listmaker notices a changed file and produces a new list.  Since Ten
+        is still the number one album, the list has a lot of Pearl Jam songs,
+        including "Jeremy", which is about two songs down (remember they are
+        random).
+    
+    8) The class hears "Jeremy" twice in the span of forty-five minutes.
+
+    This problem can be even more aggravating when Johnny votes AGAINST Pearl
+    Jam, but it is popular enough to still be number one even after his
+    negative vote. Thus assuming the list had been playing for a while,
+    Johnny gets to hear even more Pearl Jam for his trouble.  I plan to fix
+    this in the future.
+
+7) REGISTRATION
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License (COPYING) for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+    If you enjoy this program, I'd appreciate it if you drop me a line
+    saying so.  Please send any bug reports to me, as well.  If you'd like
+    to aid in the development of this program, that would also be very
+    spiffy.
+    
+    I wrote this program to scratch an itch, and have made it available
+    thinking that perhaps there are others who would find it useful.  I do
+    not need or expect any money from you if you use it; this is freeware in
+    every sense of the word.  However, if you really feel you should send me
+    money, I guess that'd be okay, too.
+
+
+8) ADDITIONAL INFORMATION
+
+    Name:       voteamp-0.1.0.tar.gz
+    Version:    0.1.0  (alpha)
+    Author:     Graham Mitchell
+    Mail:       10507 Mellow Meadows #5203, Austin TX, 78750-1234
+    Email:      mitchell@cs.leander.isd.tenet.edu
+    WWW:        http://www.onr.com/user/mitchell/index.html

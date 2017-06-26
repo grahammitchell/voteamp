@@ -1,0 +1,23 @@
+have this check the current_period file and automatically reset when it
+	changes
+log all votes with a timestamp
+move input and output files into more /var/run and var/etc(?)
+
+clean up code; move net stuff into separate source file (same as in voter?)
+implement nonce/challenge-based security so passwords aren't sent in the clear
+reinit if ballot changed or in response to SIGHUP
+send ballot file to client
+exponential back-off delay if can't lock state file
+	(perhaps create state.lock in /tmp to make this easier)
+figure out how to keep track of already voteds in forked implementation
+	(use linux IPC shared memory?  non-portable)
+choose random order for tie votes (not merely alphabetic)
+implement all options from voted.ini (many are ignored)
+
+- implement MD5 passwords
++ remove most of the debugging output
++ read info from ini
++ wipe state file every so often
++ checksum at end of votestring for sanity
++ maintain current pid in /var/run/voted.pid
++ run in background by default

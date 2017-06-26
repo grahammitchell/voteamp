@@ -1,0 +1,22 @@
+Credits
+
+The crew at xaudio.com who wrote a nice, free mp3 player.  Their inclusion
+of a stdin/stdout version made fxaudio possible.
+
+My friend Roy Lee Saenz, who showed me how to redirect standard input and
+output for a child process to a pipe, which made writing fxaudio possible.
+He also suggested using stat(2) to check if a file had changed instead of
+whatever lame method I was originally planning on. (MD5 hash?)
+
+dentar@dentar.com, for writing tailbeep and making it open source, so I could
+learn how to properly have a program daemonize itself.
+
+The faculty and staff at the University of Texas at Austin, who taught me
+how to program the right way.
+
+Leander High School, for providing the network access that my system runs
+on.
+
+Of course, always glory needs to go to God.  He's the one who's gifted me
+with the talent to do this stuff, the resources to pull it off, and a great
+job that makes it possible.  In my life, Lord, be glorified.

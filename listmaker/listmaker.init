@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+#	/etc/rc.d/init.d/listmaker
+#
+# Starts the listmaker daemon
+#
+# processname: listmaker
+
+# Source function library.
+. /etc/init.d/functions
+
+test -x /usr/local/bin/listmaker || exit 0
+
+RETVAL=0
+
+#
+#	See how we were called.
+#
+
+prog="listmaker"
+
+start() {
+	# Check if listmaker is already running
+	if [ ! -f /var/lock/subsys/listmaker ]; then
+	    echo -n $"Starting $prog: "
+	    /usr/local/bin/listmaker --no_db /var/www/perl/voter/voted.results /music/metafile.m3u
+	    RETVAL=$?
+	    ( [ $RETVAL -eq 0 ] && touch /var/lock/subsys/listmaker && success ) || failure
+	    echo
+	fi
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	kill `cat /var/run/listmaker.pid`
+	RETVAL=$?
+	( [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/listmaker && success ) || failure
+	echo
+}
+
+
+restart() {
+	stop
+	start
+}	
+
+reload() {
+	restart
+}	
+
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+reload|restart)
+	restart
+	;;
+condrestart)
+	if [ -f /var/lock/subsys/listmaker ]; then
+	    restart
+	fi
+	;;
+status)
+	if [ -f /var/lock/subsys/listmaker ]; then
+		echo "listmaker is running"
+	else
+		echo "listmaker is not running"
+	fi
+	;;
+*)
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	exit 1
+esac
+
+exit $?
+exit $RETVAL
